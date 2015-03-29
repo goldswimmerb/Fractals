@@ -8,9 +8,9 @@ public class kochPanel extends JPanel
  private final int PANEL_WIDTH = 1000;
  private final int PANEL_HEIGHT = 1080;
  private final double SQ = Math.sqrt(3.0) / 6;
- private final int TOPX = 500, TOPY = 140;
- private final int LEFTX = 220, LEFTY = 700;
- private final int RIGHTX = 780, RIGHTY = 700;
+ private final int TOPX = 500, TOPY = 50;
+ private final int LEFTX = 200, LEFTY = 600;
+ private final int RIGHTX = 800, RIGHTY = 600;
  private int current; // current order
  
 public kochPanel (int currentOrder)
@@ -61,10 +61,20 @@ public kochPanel (int currentOrder)
  g.setColor (Color.black); 
  //draws left side of triangle
  drawFractal (g, current, TOPX, TOPY, LEFTX, LEFTY);
+ 
+ 
+ for(int i = 0; i < 10; i++){
+	 int add = i *10;
+ drawFractal (g, current, TOPX, TOPY +200+add, LEFTX + 150 +add ,LEFTY -100 - add );
+ drawFractal (g, current, LEFTX +150 +add, LEFTY-100-add, RIGHTX-150-add, RIGHTY-100-add);
+ drawFractal (g, current, RIGHTX -150 - add, RIGHTY-100-add, TOPX, TOPY+200+add);
+ }
  //draws bottom of triangle
  drawFractal (g, current, LEFTX, LEFTY, RIGHTX, RIGHTY);
+
  //draws right side of triangle
- drawFractal (g, current, RIGHTX, RIGHTY, TOPX, TOPY);
+ drawFractal (g, current, RIGHTX , RIGHTY, TOPX, TOPY);
+ 
  }
  
 
