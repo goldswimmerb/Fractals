@@ -1,0 +1,91 @@
+import java.awt.*;
+import javax.swing.JPanel;
+
+public class FernPanel extends JPanel
+{
+  
+  //size of the window
+  private final int HEIGHT = 400, WIDTH = 400;
+  //start position of the line
+  private final int STARTX = 200, STARTY = 375;
+  //in radians
+  private final double START_ANGLE = Math.PI / 2;
+  //the length of the first part of the stem
+  private final int START_LENGTH = 100; 
+  
+  /*points down the initial stem where each 
+  of the subferns will be placed*/
+  private final double LEFT_PART = 0.7;
+  private final double RIGHT_PART = 0.8;
+ 
+  /*how much each line will be shortened with each subfern
+  these should be greater than 0 and less than 1*/
+  private final double LEFT_DECREASE = 0.8;
+  private final double RIGHT_DECREASE = 0.5;
+  private final double UP_DECREASE = 0.6;
+  
+  /*The angle change from the stem for both left and right sides of the fern*/
+  private final double LEFT_ANGLE = (Math.PI * 2) / 12; //this should be possitive
+  private final double RIGHT_ANGLE = (Math.PI * 2) / 6;
+  private final double UP_ANGLE = (Math.PI * 2) / 48; //the amount of angle change by going one section up the stem
+  
+  private int times;//how many sections the main fern will have
+  
+  public FernPanel(int length)
+  {
+    setBackground(Color.white);
+    setPreferredSize(new Dimension(HEIGHT, WIDTH));
+    times = length;
+  }
+  
+  public void drawFern(int branches, double length, double angle, double x1, double y1, Graphics page)
+  {
+    if(branches >= 1)
+    {
+      while(angle > Math.PI/2)
+        angle = (Math.PI * -1) + (angle - Math.PI);
+      while(angle < Math.PI/-2)
+        angle = Math.PI + (angle + Math.PI);
+      
+      double deltaY = Math.sin(angle) * length;
+      double deltaX = Math.sqrt(Math.pow(length, 2) - Math.pow(deltaY, 2));
+      if(angle < START_ANGLE && angle > START_ANGLE * -1)
+        deltaX *= -1;
+      
+      double x2 = x1 + deltaX;
+      double y2 = y1 - deltaY;
+      
+      page.drawLine((int)x1, (int)y1, (int)x2, (int)y2);
+      
+      double xLeft, yLeft, xRight, yRight;
+      xLeft = x1 + (deltaX * LEFT_PART);
+      xRight = x1 + (deltaX * RIGHT_PART);
+      yLeft = y1 - (deltaY * LEFT_PART);
+      yRight = y1 - (deltaY * RIGHT_PART);
+      
+      if(branches > 4)
+      {
+        drawFern(4, length*LEFT_DECREASE, angle-LEFT_ANGLE, xLeft, yLeft, page);
+        drawFern(4, length*RIGHT_DECREASE, angle+RIGHT_ANGLE, xRight, yRight, page);
+      }
+      else
+      {
+        drawFern(branches-1, length*LEFT_DECREASE, angle-LEFT_ANGLE, xLeft, yLeft, page);
+        drawFern(branches-1, length*RIGHT_DECREASE, angle+RIGHT_ANGLE, xRight, yRight, page);
+      }
+      drawFern(branches-1, length*UP_DECREASE, angle+UP_ANGLE, x2, y2, page);
+    }
+  }
+  
+  public void paintComponent(Graphics page)
+  {
+    super.paintComponent(page);
+    
+    page.setColor(Color.BLACK);
+    
+    drawFern(times, START_LENGTH, START_ANGLE, STARTX, STARTY, page);
+  }
+  
+  public int getLength(){return times;}
+  public void setLength(int length){times = length;}
+}
